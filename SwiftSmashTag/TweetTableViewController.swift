@@ -41,6 +41,10 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // the height comig out the storyboard
+        tableView.estimatedRowHeight = tableView.rowHeight
+        // calculate the size
+        tableView.rowHeight = UITableViewAutomaticDimension
         refresh()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -78,11 +82,9 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.CellReuseIdentifier, forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.CellReuseIdentifier, forIndexPath: indexPath) as! TweetTableViewCell
 
-        let tweet = tweets[indexPath.section][indexPath.row]
-        cell.textLabel?.text = tweet.text
-        cell.detailTextLabel?.text = tweet.user.name
+        cell.tweet = tweets[indexPath.section][indexPath.row]
         return cell
     }
 
