@@ -37,10 +37,25 @@ class TweetTableViewCell: UITableViewCell {
             tweetScreenName?.text = "\(currentTweet.user)"
             
             if let profileImageURL = currentTweet.user.profileImageURL {
-                if let imageData = NSData(contentsOfURL: profileImageURL) {
-                    // blocks the main thread!
-                    tweetProfileImageView?.image = UIImage(data: imageData)
-                }
+                // do the retrieving off the main thread
+                // print(profileImageURL)
+                dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), { () -> Void in
+                    do {
+                        // This only works if you add a line to your Info.plist
+                        // See http://stackoverflow.com/questions/31254725/transport-security-has-blocked-a-cleartext-http
+                        // Add an exception domain for: pbs.twimg.com
+                        let imageData = try NSData(contentsOfURL: profileImageURL, options: NSDataReadingOptions.DataReadingMappedIfSafe)
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            if profileImageURL == self.tweet!.user.profileImageURL {
+                                // if we have the image data we can go back to the main thread
+                                self.tweetProfileImageView?.image = UIImage(data: imageData)
+                            }
+                        })
+                    }
+                    catch {
+                        print(error)
+                    }
+                })
             }
         }
     }
