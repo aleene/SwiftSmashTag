@@ -40,6 +40,30 @@ public class Tweet : CustomStringConvertible
                         let start = max(min(startIndex, length-1), 0)
                         let end = max(min(endIndex, length), 0)
                         if end > start {
+                            // solution taken from https://github.com/sanjibahmad/Smashtag/blob/master/Smashtag/Twitter/Tweet.swift needed for Swift 2.1
+                            var adjustedRange = inText.startIndex.advancedBy(start)...inText.startIndex.advancedBy(end-1)
+                            var keywordInText = inText.substringWithRange(adjustedRange)
+                            if prefix != nil && !keywordInText.hasPrefix(prefix!) && start > 0 {
+                                adjustedRange = inText.startIndex.advancedBy(start-1)...inText.startIndex.advancedBy(end-2)
+                                keywordInText = inText.substringWithRange(adjustedRange)
+                            }
+                            range = adjustedRange
+                            keyword = keywordInText
+                            if prefix == nil || keywordInText.hasPrefix(prefix!) {
+                                nsrange = inText.rangeOfString(keyword, nearRange: NSMakeRange(startIndex, endIndex-startIndex))
+                                if nsrange.location != NSNotFound {
+                                    // failable initializers are required to initialize all properties before returning failure
+                                    // (this is probably just a (temporary?) limitation of the implementation of Swift)
+                                    // however, it appears that (sometimes) you can "return" in the case of success like this
+                                    // and it avoids the warning (although "return" is sort of weird in an initializer)
+                                    // (this seems to work even though all the properties are NOT initialized for the "return nil" below)
+                                    // hopefully in future versions of Swift this will all not be an issue
+                                    // because you'll be allowed to fail without initializing all properties?
+                                    return
+                                }
+                            }
+/* OLD VERSION
+                            //looks like there is a problem with local and public variable assignment?
                             range = inText.startIndex.advancedBy(start)...inText.startIndex.advancedBy(end-1)
                             keyword = inText.substringWithRange(range)
                             if prefix != nil && keyword.hasPrefix(prefix!) && start > 0 {
@@ -52,6 +76,7 @@ public class Tweet : CustomStringConvertible
                                     return
                                 }
                             }
+*/
                         }
                     }
                 }
@@ -59,14 +84,21 @@ public class Tweet : CustomStringConvertible
             return nil
         }
 
-        public var description: String { get { return "\(keyword) (\(nsrange.location), \(nsrange.location+nsrange.length-1))" } }
+        public var description: String {
+            get {
+                return "\(keyword) (\(nsrange.location), \(nsrange.location+nsrange.length-1))"
+            }
+        }
     }
     
-    public var description: String { return "\(user) - \(created)\n\(text)\nhashtags: \(hashtags)\nurls: \(urls)\nuser_mentions: \(userMentions)" + (id == nil ? "" : "\nid: \(id!)") }
+    public var description: String {
+        return "\(user) - \(created)\n\(text)\nhashtags: \(hashtags)\nurls: \(urls)\nuser_mentions: \(userMentions)" + (id == nil ? "" : "\nid: \(id!)")
+    }
 
     // MARK: - Private Implementation
 
     init?(data: NSDictionary?) {
+        // get the data of the tweet out of the dictionary
         if let user = User(data: data?.valueForKeyPath(TwitterKey.User) as? NSDictionary) {
             self.user = user
             if let text = data?.valueForKeyPath(TwitterKey.Text) as? String {
@@ -84,6 +116,8 @@ public class Tweet : CustomStringConvertible
                     let hashtagMentionsArray = data?.valueForKeyPath(TwitterKey.Entities.Hashtags) as? NSArray
                     hashtags = getIndexedKeywords(hashtagMentionsArray, inText: text, prefix: "#")
                     let urlMentionsArray = data?.valueForKeyPath(TwitterKey.Entities.URLs) as? NSArray
+                    // print("\(urlMentionsArray?.description)")
+                    // warning: not all URLs of a tweet are in this array.
                     urls = getIndexedKeywords(urlMentionsArray, inText: text, prefix: "h")
                     let userMentionsArray = data?.valueForKeyPath(TwitterKey.Entities.UserMentions) as? NSArray
                     userMentions = getIndexedKeywords(userMentionsArray, inText: text, prefix: "@")
@@ -102,11 +136,19 @@ public class Tweet : CustomStringConvertible
     }
 
     private func getIndexedKeywords(dictionary: NSArray?, inText: String, prefix: String? = nil) -> [IndexedKeyword] {
+        // dictionary is the Array with keywords (hashtags, mentions, etc.)
+        // setup the empty results array with IndexKeyword(s) (keyword, range, nsrange)
         var results = [IndexedKeyword]()
+        // if the dictionary(array) with keywords exists
         if let indexedKeywords = dictionary {
+            // loop over each keyword in the array
             for indexedKeywordData in indexedKeywords {
-                if let indexedKeyword = IndexedKeyword(data: indexedKeywordData as? NSDictionary, inText: inText, prefix: prefix) {
-                    results.append(indexedKeyword)
+                // indexedKeywordData has become a dictionary
+                // It seems that each array element is in fact a dictionary
+                // extract the indices
+                if let indexedKeywordLocal = IndexedKeyword(data: indexedKeywordData as? NSDictionary, inText: inText, prefix: prefix) {
+                    // add new index to array
+                    results.append(indexedKeywordLocal)
                 }
             }
         }
@@ -151,6 +193,7 @@ private extension String {
         get {
             let dateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "EEE MMM dd HH:mm:ss Z yyyy"
+            dateFormatter.locale = NSLocale(localeIdentifier: "en_US")
             return dateFormatter.dateFromString(self)
         }
     }

@@ -13,30 +13,57 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     var tweets = [[Tweet]]()
     var searchText: String? = "#stanford" {
         didSet {
+            lastSuccessfulRequest = nil
             tweets.removeAll()
             tableView.reloadData()
             refresh()
         }
     }
     
-    func refresh() {
-        if searchText != nil {
-            let request = TwitterRequest(search:searchText!, count: 100)
-            // note that fetchTweets is an asynchronous api
-            request.fetchTweets { (newTweets) -> Void in
-                // must be handled off the main queue
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if newTweets.count > 0 {
-                        // as this is networking code, not to be done in the main queue
-                        // self need as we are capuring self, but is no problem
-                        self.tweets.insert(newTweets, atIndex: 0)
-                        self.tableView.reloadData()
-                    }
-                })
+    var lastSuccessfulRequest: TwitterRequest?
+    
+    var nextRequestToAttempt: TwitterRequest? {
+        if lastSuccessfulRequest == nil {
+            if searchText != nil {
+                return TwitterRequest(search:searchText!, count: 100)
+            } else {
+                return nil
             }
+        } else {
+            return lastSuccessfulRequest!.requestForNewer
         }
-
     }
+
+    func refresh() {
+        if refreshControl != nil {
+            refreshControl?.beginRefreshing()
+        }
+        refresh(refreshControl)
+    }
+    
+    @IBAction func refresh(sender: UIRefreshControl?) {
+        if searchText != nil {
+            if let request = nextRequestToAttempt {
+                // note that fetchTweets is an asynchronous api
+                request.fetchTweets { (newTweets) -> Void in
+                    // must be handled off the main queue
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        if newTweets.count > 0 {
+                            self.lastSuccessfulRequest = request
+                            // as this is networking code, not to be done in the main queue
+                            // self need as we are capuring self, but is no problem
+                            self.tweets.insert(newTweets, atIndex: 0)
+                            self.tableView.reloadData()
+                        }
+                        sender?.endRefreshing()
+                    })
+                }
+            }
+        } else {
+            sender?.endRefreshing()
+        }
+    }
+    
     // MARK: - View controller lifecycle
 
     override func viewDidLoad() {
@@ -59,6 +86,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
             searchTextField.text = searchText
         }
     }
+    
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == searchTextField {
@@ -85,6 +113,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.CellReuseIdentifier, forIndexPath: indexPath) as! TweetTableViewCell
 
         cell.tweet = tweets[indexPath.section][indexPath.row]
+        // print(tweets[indexPath.section][indexPath.row])
         return cell
     }
 
