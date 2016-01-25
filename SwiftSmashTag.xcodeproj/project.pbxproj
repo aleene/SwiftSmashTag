@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51661DD91C5536EF00845937 /* ImageMentionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51661DD81C5536EF00845937 /* ImageMentionTableViewCell.swift */; };
+		519762071C54D18100DDF41F /* MentionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519762061C54D18000DDF41F /* MentionsTableViewController.swift */; };
 		51BACCD11C51286F00D16E5E /* TweetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BACCD01C51286F00D16E5E /* TweetTableViewCell.swift */; };
 		51CEB8F61C50E204000BA082 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB8F51C50E204000BA082 /* AppDelegate.swift */; };
 		51CEB8FB1C50E204000BA082 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51CEB8F91C50E204000BA082 /* Main.storyboard */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		51661DD81C5536EF00845937 /* ImageMentionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMentionTableViewCell.swift; sourceTree = "<group>"; };
+		519762061C54D18000DDF41F /* MentionsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MentionsTableViewController.swift; sourceTree = "<group>"; };
 		51BACCD01C51286F00D16E5E /* TweetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetTableViewCell.swift; sourceTree = "<group>"; };
 		51CEB8F21C50E204000BA082 /* SwiftSmashTag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftSmashTag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51CEB8F51C50E204000BA082 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -70,6 +74,8 @@
 				51D2C3571C50E7CD00B8A87A /* TweetTableViewController.swift */,
 				51D2C3521C50E7A600B8A87A /* User.swift */,
 				51CEB8F91C50E204000BA082 /* Main.storyboard */,
+				51661DD81C5536EF00845937 /* ImageMentionTableViewCell.swift */,
+				519762061C54D18000DDF41F /* MentionsTableViewController.swift */,
 				51BACCD01C51286F00D16E5E /* TweetTableViewCell.swift */,
 				51CEB9071C50E226000BA082 /* Supporting Files */,
 			);
@@ -158,7 +164,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				519762071C54D18100DDF41F /* MentionsTableViewController.swift in Sources */,
 				51D2C3581C50E7CD00B8A87A /* TweetTableViewController.swift in Sources */,
+				51661DD91C5536EF00845937 /* ImageMentionTableViewCell.swift in Sources */,
 				51D2C3551C50E7A600B8A87A /* TwitterRequest.swift in Sources */,
 				51D2C3561C50E7A600B8A87A /* User.swift in Sources */,
 				51CEB8F61C50E204000BA082 /* AppDelegate.swift in Sources */,

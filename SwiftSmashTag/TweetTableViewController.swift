@@ -11,6 +11,7 @@ import UIKit
 class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     
     var tweets = [[Tweet]]()
+    
     var searchText: String? = "#stanford" {
         didSet {
             lastSuccessfulRequest = nil
@@ -19,6 +20,8 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
             refresh()
         }
     }
+    
+    var selectedTweet: NSIndexPath? = nil
     
     var lastSuccessfulRequest: TwitterRequest?
     
@@ -64,11 +67,29 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
+    struct Storyboard {
+        static let SegueIdentifier = "Show Mentions"
+        static let CellReuseIdentifier = "Tweet"
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let identifier = segue.identifier {
+            switch identifier {
+                case Storyboard.SegueIdentifier:
+                    if let vc = segue.destinationViewController as? MentionsTableViewController {
+                        if selectedTweet != nil {
+                            vc.tweet = tweets[selectedTweet!.section][selectedTweet!.row]
+                        }
+                }
+                default: break
+            }
+        }
+    }
     // MARK: - View controller lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // the height comig out the storyboard
+        // the height coming out the storyboard
         tableView.estimatedRowHeight = tableView.rowHeight
         // calculate the size
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -105,10 +126,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         return tweets[section].count
     }
     
-    private struct Storyboard {
-        static let CellReuseIdentifier = "Tweet"
-    }
-
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.CellReuseIdentifier, forIndexPath: indexPath) as! TweetTableViewCell
 
@@ -117,6 +134,11 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         return cell
     }
 
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        selectedTweet = indexPath
+        performSegueWithIdentifier(Storyboard.SegueIdentifier, sender: self)
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -149,16 +171,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the item to be re-orderable.
         return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
     }
     */
 
