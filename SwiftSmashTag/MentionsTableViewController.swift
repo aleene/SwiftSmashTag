@@ -10,28 +10,104 @@ import UIKit
 
 class MentionsTableViewController: UITableViewController {
     
-    struct TableSection {
-        var section: Int
-        var sectionCellIdentifier: String
-        var sectionTitle: String
+    enum MentionType {
+        case Media(NSURL)
+        case Hashtag(String)
+        case URL(String)
+        case UserMention(String)
+        
+        var description: String {
+            switch self {
+            case .Media(let mediaItem):
+                return mediaItem.absoluteString
+            case .Hashtag(let hashtag):
+                return hashtag
+            case .URL(let url):
+                return url
+            case .UserMention(let userMention):
+                return userMention
+            }
+        }
+
     }
     
-    struct StoryboardCellIdentifier {
-        static let ImageCell = "Image Cell"
-        static let HashtagCell = "Hashtag Cell"
-        static let URLCell = "URL Cell"
-        static let UserCell = "User Cell"
+    struct TableSection {
+        var cellIdentifier: String
+        var title: String
+        var rowHeight: CGFloat
+        var mention: [MentionType]
     }
+    
+    struct TweetMention {
+        var sections: [TableSection] = []
+        
+        init(withTweet tweet: Tweet?) {
+            if let newTweet = tweet {
+                // look at each possible section
+                if newTweet.media.count > 0 {
+                    var mediaMentions: [MentionType] = []
+                    for element in newTweet.media {
+                        mediaMentions.append(MentionType.Media(element.url))
+                    }
+                    sections.append(TableSection.init(
+                        cellIdentifier: "Image Cell",
+                        title: "Images in tweet",
+                        rowHeight: 200,
+                        mention: mediaMentions))
+                }
+                if newTweet.hashtags.count > 0 {
+                    var hashtagMentions: [MentionType] = []
+                    for element in newTweet.hashtags {
+                        hashtagMentions.append(MentionType.Hashtag(element.keyword))
+                    }
+                    sections.append(TableSection.init(
+                        cellIdentifier: "Hashtag Cell",
+                        title: "Hashtags in tweet",
+                        rowHeight: 44,
+                        mention: hashtagMentions))
+                }
+                if newTweet.urls.count > 0 {
+                    var urlMentions: [MentionType] = []
+                    for element in newTweet.urls {
+                        urlMentions.append(MentionType.URL(element.keyword))
+                    }
+                    sections.append(TableSection.init(
+                        cellIdentifier: "URL Cell",
+                        title: "URLs in tweet",
+                        rowHeight: 44,
+                        mention: urlMentions))
+                }
+                if newTweet.userMentions.count > 0 {
+                    var userMentions: [MentionType] = []
+                    for element in newTweet.userMentions {
+                        userMentions.append(MentionType.UserMention(element.keyword))
+                    }
+                    sections.append(TableSection.init(
+                        cellIdentifier: "User Cell",
+                        title: "Users in tweet",
+                        rowHeight: 44,
+                        mention: userMentions))
+                }
+            } else {
+              sections = []
+            }
+        }
+    }
+    
+    var currentTweetMention: TweetMention?
     
     // this must be setup by the calling ViewController
     var tweet: Tweet? = nil {
         didSet {
+            // now we know the tweet, we can setup the sections
+            self.currentTweetMention = TweetMention(withTweet: tweet)
             tableView.reloadData()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -49,61 +125,34 @@ class MentionsTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return currentTweetMention != nil ? currentTweetMention!.sections.count : 0
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var numberOfRows = 0
-        if tweet != nil {
-            switch section {
-                case 0: numberOfRows = tweet!.media.count
-                case 1: numberOfRows = tweet!.hashtags.count
-                case 2: numberOfRows = tweet!.urls.count
-                case 3: numberOfRows = tweet!.userMentions.count
-            default: break
-            }
-        }
-        return numberOfRows
+        return currentTweetMention != nil ? currentTweetMention!.sections[section].mention.count : 0
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        switch indexPath.section {
-            case 0:
-                let cell = tableView.dequeueReusableCellWithIdentifier(StoryboardCellIdentifier.ImageCell, forIndexPath: indexPath) as! ImageMentionTableViewCell
-                
-                cell.tweetURL = tweet!.media[indexPath.row].url
+        
+        let mention = currentTweetMention!.sections[indexPath.section].mention[indexPath.row]
+        switch mention {
+            case .Media(let mediaItem):
+                let cell = tableView.dequeueReusableCellWithIdentifier(currentTweetMention!.sections[indexPath.section].cellIdentifier, forIndexPath: indexPath) as! ImageMentionTableViewCell
+                cell.tweetURL = mediaItem
                 return cell
-            case 1:
-                let cell = tableView.dequeueReusableCellWithIdentifier(StoryboardCellIdentifier.HashtagCell, forIndexPath: indexPath)
-                cell.textLabel!.text = tweet!.hashtags[indexPath.row].keyword
-                return cell
-
-            case 2:
-                let cell = tableView.dequeueReusableCellWithIdentifier(StoryboardCellIdentifier.URLCell, forIndexPath: indexPath)
-                cell.textLabel!.text = tweet!.urls[indexPath.row].keyword
-                return cell
-
             default:
-                let cell = tableView.dequeueReusableCellWithIdentifier(StoryboardCellIdentifier.UserCell, forIndexPath: indexPath)
-                cell.textLabel!.text = tweet!.userMentions[indexPath.row].keyword
+                let cell = tableView.dequeueReusableCellWithIdentifier(currentTweetMention!.sections[indexPath.section].cellIdentifier, forIndexPath: indexPath)
+                cell.textLabel!.text = mention.description
                 return cell
         }
     }
 
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0: return tweet!.media.count > 0 ? "Images in tweet" : nil
-        case 1: return tweet!.hashtags.count > 0 ?"Hashtags in tweet" : nil
-        case 2: return tweet!.urls.count > 0 ? "URLs in tweet" : nil
-        case 3: return tweet!.userMentions.count > 0 ? "Users in tweet" : nil
-        default: return nil
-        }
+        return currentTweetMention != nil ? currentTweetMention!.sections[section].title : nil
     }
     
     override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        switch indexPath.section {
-        case 0: return CGFloat(200)
-        default: return CGFloat(44)
+        return currentTweetMention != nil ? currentTweetMention!.sections[indexPath.section].rowHeight : CGFloat(0)
         }
 
     }
@@ -153,4 +202,4 @@ class MentionsTableViewController: UITableViewController {
     }
     */
 
-}
+
