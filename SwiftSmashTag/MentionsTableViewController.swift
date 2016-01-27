@@ -10,7 +10,7 @@ import UIKit
 
 class MentionsTableViewController: UITableViewController {
     
-    enum MentionType {
+    private enum MentionType {
         case Media(NSURL)
         case Hashtag(String)
         case URL(String)
@@ -31,14 +31,14 @@ class MentionsTableViewController: UITableViewController {
 
     }
     
-    struct TableSection {
+    private struct TableSection {
         var cellIdentifier: String
         var title: String
         var rowHeight: CGFloat
         var mention: [MentionType]
     }
     
-    struct TweetMention {
+    private struct TweetMention {
         var sections: [TableSection] = []
         
         init(withTweet tweet: Tweet?) {
@@ -94,7 +94,7 @@ class MentionsTableViewController: UITableViewController {
         }
     }
     
-    var currentTweetMention: TweetMention?
+    private var currentTweetMention: TweetMention?
     
     // this must be setup by the calling ViewController
     var tweet: Tweet? = nil {
@@ -117,7 +117,8 @@ class MentionsTableViewController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        if tweet != nil {
+        if let currentTweet = tweet {
+            title = currentTweet.user.name
             tableView.reloadData()
         }
     }

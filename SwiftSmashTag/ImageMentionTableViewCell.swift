@@ -21,7 +21,7 @@ class ImageMentionTableViewCell: UITableViewCell {
     // the width is changed so that the aspect ratio of the image does not change
     @IBOutlet weak var imageTweetViewWidthConstraint: NSLayoutConstraint!
     
-    var tempImage: UIImage? {
+    private var tempImage: UIImage? {
         get {
             return imageInTweetView.image
         }
@@ -73,7 +73,7 @@ class ImageMentionTableViewCell: UITableViewCell {
     }
 }
 
-extension UIImage {
+private extension UIImage {
     
     // return the aspectRatio of the image
     var aspectRatio: CGFloat {

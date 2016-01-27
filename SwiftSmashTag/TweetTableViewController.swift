@@ -10,9 +10,9 @@ import UIKit
 
 class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     
-    var tweets = [[Tweet]]()
+    private var tweets = [[Tweet]]()
     
-    var searchText: String? = "#stanford" {
+    private var searchText: String? = "#stanford" {
         didSet {
             lastSuccessfulRequest = nil
             tweets.removeAll()
@@ -21,11 +21,11 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
-    var selectedTweet: NSIndexPath? = nil
+    private var selectedTweet: NSIndexPath? = nil
     
-    var lastSuccessfulRequest: TwitterRequest?
+    private var lastSuccessfulRequest: TwitterRequest?
     
-    var nextRequestToAttempt: TwitterRequest? {
+    private var nextRequestToAttempt: TwitterRequest? {
         if lastSuccessfulRequest == nil {
             if searchText != nil {
                 return TwitterRequest(search:searchText!, count: 100)
@@ -37,7 +37,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
 
-    func refresh() {
+    private func refresh() {
         if refreshControl != nil {
             refreshControl?.beginRefreshing()
         }
@@ -67,7 +67,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
-    struct Storyboard {
+    private struct Storyboard {
         static let SegueIdentifier = "Show Mentions"
         static let CellReuseIdentifier = "Tweet"
     }

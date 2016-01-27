@@ -18,7 +18,7 @@ class TweetTableViewCell: UITableViewCell {
 
     // explanation: http://stackoverflow.com/questions/24666515/how-do-i-make-an-attributed-string-using-swift
     //
-    struct MentionsAttributes {
+    private struct MentionsAttributes {
         static let HashtagAttributes = [NSForegroundColorAttributeName: UIColor.blueColor()]
         static let URLAttributes = [NSForegroundColorAttributeName: UIColor.greenColor()]
         static let UserScreenNameAttributes = [NSForegroundColorAttributeName: UIColor.redColor()]
