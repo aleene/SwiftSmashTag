@@ -156,8 +156,25 @@ class MentionsTableViewController: UITableViewController {
         return currentTweetMention != nil ? currentTweetMention!.sections[indexPath.section].rowHeight : CGFloat(0)
         }
 
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let mention = currentTweetMention!.sections[indexPath.section].mention[indexPath.row]
+        switch mention {
+            case .Media:
+                print ("media")
+            case .URL(let urlAsString):
+                if let url = NSURL(string: urlAsString) {
+                    UIApplication.sharedApplication().openURL(url)
+                }
+            case .Hashtag(let hashtag):
+                // should segue back and do a new search with that hashtag
+                print("Hashtag: \(hashtag)")
+            case .UserMention(let userMention):
+                print("Hashtag: \(userMention)")
+            
+        }
     }
-    
+        
+    }
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
