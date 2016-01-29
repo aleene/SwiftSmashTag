@@ -17,7 +17,6 @@ class TweetImageViewController: UIViewController, UIScrollViewDelegate {
             if newValue != nil {
                 tweetImageView.image = newValue
                 tweetImageView.sizeToFit()
-                print("tweet image set")
             }
             updateUI()
         }

@@ -10,14 +10,17 @@ import UIKit
 
 class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     
-    private var tweets = [[Tweet]]()
+    var history = SearchQuery()
+
+    var tweets = [[Tweet]]()
     
-    private var searchText: String? = "#stanford" {
+    var searchText: String? = "#stanford" {
         didSet {
             lastSuccessfulRequest = nil
             tweets.removeAll()
             tableView.reloadData()
             refresh()
+            history.addQuery(query: searchText)
         }
     }
     
@@ -72,19 +75,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         static let CellReuseIdentifier = "Tweet"
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let identifier = segue.identifier {
-            switch identifier {
-                case Storyboard.SegueIdentifier:
-                    if let vc = segue.destinationViewController as? MentionsTableViewController {
-                        if selectedTweet != nil {
-                            vc.tweet = tweets[selectedTweet!.section][selectedTweet!.row]
-                        }
-                }
-                default: break
-            }
-        }
-    }
     // MARK: - View controller lifecycle
 
     override func viewDidLoad() {
@@ -108,7 +98,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
-    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == searchTextField {
             textField.resignFirstResponder()
@@ -116,6 +105,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
         return true
     }
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -139,16 +129,32 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         performSegueWithIdentifier(Storyboard.SegueIdentifier, sender: self)
     }
     
+    // MARK: - Navigation
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let identifier = segue.identifier {
+            switch identifier {
+            case Storyboard.SegueIdentifier:
+                if let vc = segue.destinationViewController as? MentionsTableViewController {
+                    if selectedTweet != nil {
+                        vc.tweet = tweets[selectedTweet!.section][selectedTweet!.row]
+                    }
+                }
+            default: break
+            }
+        }
+    }
+
     @IBAction func unwindToTweetTVC(segue: UIStoryboardSegue) {
         if let sourceViewController = segue.sourceViewController as? MentionsTableViewController {
             if let search = sourceViewController.newSearch {
                 searchTextField.text = search
                 searchText = search
             }
-            
         }
     }
 
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

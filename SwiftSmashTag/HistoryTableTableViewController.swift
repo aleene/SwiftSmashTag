@@ -1,0 +1,105 @@
+//
+//  HistoryTableTableViewController.swift
+//  SwiftSmashTag
+//
+//  Created by arnaud on 29/01/16.
+//  Copyright © 2016 Hovering Above. All rights reserved.
+//
+
+import UIKit
+
+class HistoryTableTableViewController: UITableViewController {
+
+    var history = SearchQuery()
+    
+    private var selectedQuery: String? = nil
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "Search History"
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    }
+
+    // MARK: - Table view data source
+
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return history.queries.count
+    }
+
+    struct Storyboard {
+        static let CellIdentifier = "History Cell"
+        static let SegueIdentifier = "Show Search"
+    }
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.CellIdentifier, forIndexPath: indexPath)
+
+        cell.textLabel!.text = history.queries[indexPath.row]
+
+        return cell
+    }
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        selectedQuery = history.queries[indexPath.row]
+        performSegueWithIdentifier(Storyboard.SegueIdentifier, sender: self)
+    }    // MARK: - Navigation
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let identifier = segue.identifier {
+            switch identifier {
+            case Storyboard.SegueIdentifier:
+                if let vc = segue.destinationViewController as? TweetTableViewController {
+                    if selectedQuery != nil {
+                        vc.searchText = selectedQuery
+                    }
+                }
+            default: break
+            }
+        }
+    }
+
+    /*
+    // Override to support conditional editing of the table view.
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        // Return false if you do not want the specified item to be editable.
+        return true
+    }
+    */
+
+    /*
+    // Override to support editing the table view.
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            // Delete the row from the data source
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        } else if editingStyle == .Insert {
+            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        }    
+    }
+    */
+
+    /*
+    // Override to support rearranging the table view.
+    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
+
+    }
+    */
+
+    /*
+    // Override to support conditional rearranging of the table view.
+    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        // Return false if you do not want the item to be re-orderable.
+        return true
+    }
+    */
+
+
+}
