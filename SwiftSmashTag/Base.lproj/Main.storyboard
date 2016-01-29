@@ -181,10 +181,47 @@
                             <outlet property="delegate" destination="HFl-UW-5fR" id="VLF-iA-f10"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="xL1-FG-d5I" kind="unwind" identifier="Unwind to TweetTVC" unwindAction="unwindToTweetTVC:" id="h3H-LE-LXB"/>
+                        <segue destination="yiW-ar-uh2" kind="show" identifier="Show Tweet Image" id="tzA-y8-uKZ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C2h-jI-d0P" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="xL1-FG-d5I" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2252" y="506"/>
+            <point key="canvasLocation" x="2226" y="506"/>
+        </scene>
+        <!--Tweet Image View Controller-->
+        <scene sceneID="lUv-ou-88A">
+            <objects>
+                <viewController id="yiW-ar-uh2" customClass="TweetImageViewController" customModule="SwiftSmashTag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="kTM-OC-erm"/>
+                        <viewControllerLayoutGuide type="bottom" id="lqE-Bt-dPx"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="tOd-QQ-SP7">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" bounces="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LdW-h8-Lw0">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="LdW-h8-Lw0" firstAttribute="top" secondItem="kTM-OC-erm" secondAttribute="bottom" id="B6M-7X-7Sx"/>
+                            <constraint firstItem="LdW-h8-Lw0" firstAttribute="bottom" secondItem="lqE-Bt-dPx" secondAttribute="top" id="FeG-kC-ddH"/>
+                            <constraint firstAttribute="trailing" secondItem="LdW-h8-Lw0" secondAttribute="trailing" id="KvG-6E-89g"/>
+                            <constraint firstItem="LdW-h8-Lw0" firstAttribute="leading" secondItem="tOd-QQ-SP7" secondAttribute="leading" id="MXi-Sx-dhg"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="scrollView" destination="LdW-h8-Lw0" id="ckN-QB-00l"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mKE-Ua-fOR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3106" y="399"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="HgR-e1-HcB">

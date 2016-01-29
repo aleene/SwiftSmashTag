@@ -139,6 +139,16 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         performSegueWithIdentifier(Storyboard.SegueIdentifier, sender: self)
     }
     
+    @IBAction func unwindToTweetTVC(segue: UIStoryboardSegue) {
+        if let sourceViewController = segue.sourceViewController as? MentionsTableViewController {
+            if let search = sourceViewController.newSearch {
+                searchTextField.text = search
+                searchText = search
+            }
+            
+        }
+    }
+
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

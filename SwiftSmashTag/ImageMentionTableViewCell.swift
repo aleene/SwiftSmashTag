@@ -76,6 +76,7 @@ class ImageMentionTableViewCell: UITableViewCell {
 private extension UIImage {
     
     // return the aspectRatio of the image
+    // I know it is also an element of the MediaItem
     var aspectRatio: CGFloat {
         return size.height != 0 ? size.width / size.height : 0
     }

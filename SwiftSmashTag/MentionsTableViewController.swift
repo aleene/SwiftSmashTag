@@ -118,7 +118,7 @@ class MentionsTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         if let currentTweet = tweet {
-            title = currentTweet.user.name
+            title = currentTweet.user.name + "'s tweet"
             tableView.reloadData()
         }
     }
@@ -153,27 +153,59 @@ class MentionsTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return currentTweetMention != nil ? currentTweetMention!.sections[indexPath.section].rowHeight : CGFloat(0)
+        return UITableViewAutomaticDimension
+        // return currentTweetMention != nil ? currentTweetMention!.sections[indexPath.section].rowHeight : CGFloat(0)
         }
 
+    struct Storyboard {
+        static let UnwindSegue = "Unwind to TweetTVC"
+        static let ShowImageSegue = "Show Tweet Image"
+
+    }
+    
+    var newSearch: String? = nil
+    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let mention = currentTweetMention!.sections[indexPath.section].mention[indexPath.row]
         switch mention {
             case .Media:
-                print ("media")
+                if let currentCell = tableView.cellForRowAtIndexPath(indexPath) as? ImageMentionTableViewCell {
+                    presentedImage = currentCell.imageInTweetView.image
+                    performSegueWithIdentifier(Storyboard.ShowImageSegue, sender: self)
+                }
             case .URL(let urlAsString):
                 if let url = NSURL(string: urlAsString) {
                     UIApplication.sharedApplication().openURL(url)
                 }
             case .Hashtag(let hashtag):
                 // should segue back and do a new search with that hashtag
-                print("Hashtag: \(hashtag)")
+                newSearch = hashtag
+                performSegueWithIdentifier(Storyboard.UnwindSegue, sender: self)
             case .UserMention(let userMention):
-                print("Hashtag: \(userMention)")
-            
+                newSearch = userMention
+                performSegueWithIdentifier(Storyboard.UnwindSegue, sender: self)
+
         }
     }
-        
+    
+    // MARK: - Navigation
+    
+    var presentedImage: UIImage?
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let identifier = segue.identifier {
+            switch identifier {
+            case Storyboard.ShowImageSegue:
+                if let vc = segue.destinationViewController as? TweetImageViewController {
+                    vc.tweetImage = presentedImage
+                    vc.tweetTitle = self.title
+                }
+            default: break
+            }
+        }
+    }
+
     }
     /*
     // Override to support conditional editing of the table view.
@@ -211,13 +243,6 @@ class MentionsTableViewController: UITableViewController {
     */
 
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
     */
 
 
