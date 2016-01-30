@@ -42,4 +42,11 @@ public struct SearchQuery {
         }
     }
     
+    mutating func deleteQuery(query query: String?) {
+        if let queryToDelete = query {
+            if let deleteIndex = queries.indexOf(queryToDelete) {
+                queries.removeAtIndex(deleteIndex)
+            }
+        }
+    }
 }
