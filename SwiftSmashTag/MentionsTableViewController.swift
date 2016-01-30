@@ -210,7 +210,6 @@ class MentionsTableViewController: UITableViewController {
                     vc.url = selectedURL
                     vc.tweetTitle = self.title
                 }
-
             default: break
             }
         }

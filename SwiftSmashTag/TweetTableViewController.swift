@@ -72,6 +72,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     
     private struct Storyboard {
         static let SegueIdentifier = "Show Mentions"
+        static let ImagesSegueIdentifier = "Show Tweet Images"
         static let CellReuseIdentifier = "Tweet"
     }
     
@@ -84,11 +85,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         // calculate the size
         tableView.rowHeight = UITableViewAutomaticDimension
         refresh()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
     @IBOutlet weak var searchTextField: UITextField! {
@@ -140,6 +136,20 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
                         vc.tweet = tweets[selectedTweet!.section][selectedTweet!.row]
                     }
                 }
+            case Storyboard.ImagesSegueIdentifier:
+                if let vc = segue.destinationViewController as? ImagesCollectionViewController {
+                    var tweetsWithImages = [[Tweet]]()
+                        for row in 0..<tweets.count {
+                            tweetsWithImages.append([])
+                            for tweet in tweets[row] {
+                                if tweet.media.count > 0 {
+                                    tweetsWithImages[row].append(tweet)
+                                }
+                            }
+                        }
+                        
+                    vc.tweetsWithImages = tweetsWithImages
+                }
             default: break
             }
         }
@@ -151,7 +161,17 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
                 searchTextField.text = search
                 searchText = search
             }
+        } else if let sourceViewController = segue.sourceViewController as? ImagesCollectionViewController {
+            if let selectedImageTweet = sourceViewController.selectedImageTweet {
+                // how can I show a single tweet here?
+                let newTweets = [selectedImageTweet]
+                tweets.removeAll()
+                // assume that this is just like a new search, so just insert this as such
+                self.tweets.insert(newTweets, atIndex: 0)
+                tableView.reloadData()
+            }
         }
+
     }
 
     
