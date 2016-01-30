@@ -184,12 +184,13 @@
                     <connections>
                         <segue destination="xL1-FG-d5I" kind="unwind" identifier="Unwind to TweetTVC" unwindAction="unwindToTweetTVC:" id="h3H-LE-LXB"/>
                         <segue destination="yiW-ar-uh2" kind="show" identifier="Show Tweet Image" id="tzA-y8-uKZ"/>
+                        <segue destination="zgT-AB-Og3" kind="show" identifier="Show URL Segue" id="qfj-Ms-YW1"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C2h-jI-d0P" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="xL1-FG-d5I" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2992" y="506"/>
+            <point key="canvasLocation" x="3101" y="506"/>
         </scene>
         <!--History Table Table View Controller-->
         <scene sceneID="l2D-8p-JnY">
@@ -263,6 +264,46 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mKE-Ua-fOR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3762" y="506"/>
+        </scene>
+        <!--URL View Controller-->
+        <scene sceneID="PGP-PK-lge">
+            <objects>
+                <viewController id="zgT-AB-Og3" customClass="URLViewController" customModule="SwiftSmashTag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Hu6-dE-ztR"/>
+                        <viewControllerLayoutGuide type="bottom" id="FPo-2s-xub"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jZL-Y8-Kt1">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" scalesPageToFit="YES" mediaPlaybackRequiresUserAction="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Yx-4U-PY5">
+                                <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                                <dataDetectorType key="dataDetectorTypes"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1Yx-4U-PY5" firstAttribute="top" secondItem="Hu6-dE-ztR" secondAttribute="bottom" id="3Mc-Lq-mTT"/>
+                            <constraint firstItem="1Yx-4U-PY5" firstAttribute="leading" secondItem="jZL-Y8-Kt1" secondAttribute="leading" id="JWn-Nv-ynz"/>
+                            <constraint firstItem="1Yx-4U-PY5" firstAttribute="bottom" secondItem="FPo-2s-xub" secondAttribute="top" id="RYm-Sl-XFj"/>
+                            <constraint firstItem="1Yx-4U-PY5" firstAttribute="top" secondItem="jZL-Y8-Kt1" secondAttribute="top" id="Uay-IK-n2Q"/>
+                            <constraint firstAttribute="trailing" secondItem="1Yx-4U-PY5" secondAttribute="trailing" id="dv5-7y-bEH"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Uay-IK-n2Q"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="webView" destination="1Yx-4U-PY5" id="fCA-Wo-glV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qBI-Yt-vp8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3762" y="1288"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="HgR-e1-HcB">

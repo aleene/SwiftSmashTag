@@ -16,6 +16,7 @@ public struct SearchQuery {
     
     private struct Constants {
         static let HistoryKey = "History Key"
+        static let HistorySize = 100
     }
     
     init() {
@@ -26,11 +27,16 @@ public struct SearchQuery {
         }
     }
     
+    // see also http://stackoverflow.com/questions/30790882/unable-to-append-string-to-array-in-swift/30790932#30790932
+    //
     mutating func addQuery(query query: String?) {
         if let newQuery = query {
             // is this query new?
             if !queries.contains(newQuery) {
                 queries.insert(newQuery, atIndex: 0)
+                if queries.count > Constants.HistorySize {
+                    queries.removeLast()
+                }
             }
             defaults.setObject(queries, forKey: Constants.HistoryKey)
         }

@@ -160,10 +160,13 @@ class MentionsTableViewController: UITableViewController {
     struct Storyboard {
         static let UnwindSegue = "Unwind to TweetTVC"
         static let ShowImageSegue = "Show Tweet Image"
+        static let ShowURLSegue = "Show URL Segue"
 
     }
     
     var newSearch: String? = nil
+    
+    var selectedURL: NSURL? = nil
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let mention = currentTweetMention!.sections[indexPath.section].mention[indexPath.row]
@@ -175,7 +178,8 @@ class MentionsTableViewController: UITableViewController {
                 }
             case .URL(let urlAsString):
                 if let url = NSURL(string: urlAsString) {
-                    UIApplication.sharedApplication().openURL(url)
+                    selectedURL = url
+                    performSegueWithIdentifier(Storyboard.ShowURLSegue, sender: self)
                 }
             case .Hashtag(let hashtag):
                 // should segue back and do a new search with that hashtag
@@ -201,6 +205,12 @@ class MentionsTableViewController: UITableViewController {
                     vc.tweetImage = presentedImage
                     vc.tweetTitle = self.title
                 }
+            case Storyboard.ShowURLSegue:
+                if let vc = segue.destinationViewController as? URLViewController {
+                    vc.url = selectedURL
+                    vc.tweetTitle = self.title
+                }
+
             default: break
             }
         }

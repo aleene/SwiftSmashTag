@@ -39,7 +39,7 @@ class TweetImageViewController: UIViewController, UIScrollViewDelegate {
         updateUI()
     }
 
-    func updateUI(){
+    private func updateUI(){
         // define the content size
         scrollView?.contentSize = tweetImageView.frame.size
 
@@ -54,7 +54,7 @@ class TweetImageViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-     override func viewDidLayoutSubviews() {
+    override func viewDidLayoutSubviews() {
         // calculating the zoomfactor can only(?) be done here
         // Here the actual bounds of the device are known
         if tweetImage != nil {
@@ -66,7 +66,7 @@ class TweetImageViewController: UIViewController, UIScrollViewDelegate {
         return tweetImageView
     }
     
-    func zoomAndCenterImageInScrollView(animated: Bool) {
+    private func zoomAndCenterImageInScrollView(animated: Bool) {
         // zoomAndCenterToContentSize zooms and shifts the contentSize area,
         // such that there is no whitespace left within the bounds and
         // the contentSize will be centered in the bounds are of the scrollView
@@ -107,16 +107,16 @@ private extension UIScrollView {
         self.setContentOffset(CGPointMake(x, y), animated: animated)
         // print("After offset contentSize \(self.contentSize); bounds origin: \(self.bounds.origin); frame origin: \(self.frame.origin)")
     }
-
 }
-    private extension UIImage {
+
+private extension UIImage {
         
-        // return the aspectRatio of the image
-        // I know it is also an element of the MediaItem
-        var aspectRatio: CGFloat {
-            return self.size.height != 0 ? self.size.width / self.size.height : 0
-        }
+    // return the aspectRatio of the image
+    // I know it is also an element of the MediaItem
+    var aspectRatio: CGFloat {
+        return self.size.height != 0 ? self.size.width / self.size.height : 0
     }
+}
 
 
 private extension CGSize {
